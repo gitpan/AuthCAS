@@ -4,7 +4,7 @@ package AuthCAS;
 use strict;
 use vars qw( $VERSION);
 
-$VERSION = '1.1';
+$VERSION = '1.3';
 
 =head1 NAME
 
@@ -12,7 +12,7 @@ AuthCAS - Client library for CAS 2.0 authentication server
 
 =head1 VERSION
 
-Version 1.1
+Version 1.3
 
 =head1 DESCRIPTION
 
@@ -216,16 +216,16 @@ sub _parse_xml {
 
     my %xml_struct;
 
-    while ($data =~ /^<([^\s>]+)(\s+[^\s>]+)?>([\s\S\n]*)(<\/\1>)/m) {
+    while ($data =~ /^<([^\s>]+)(\s+[^\s>]+)*>([\s\S\n]*)(<\/\1>)/m) {
 	my ($new_tag, $new_data) = ($1,$3);
 	chomp $new_data;
 	$new_data =~ s/^[\s\n]+//m;
-	$data =~ s/^<$new_tag(\s+[^\s>]+)?>([\s\S\n]*)(<\/$new_tag>)//m;
+	$data =~ s/^<$new_tag(\s+[^\s>]+)*>([\s\S\n]*)(<\/$new_tag>)//m;
 	$data =~ s/^[\s\n]+//m;
 	
 	## Check if data still includes XML tags
 	my $struct;
-	if ($new_data =~/^<([^\s>]+)(\s+[^\s>]+)?>([\s\S\n]*)(<\/\1>)/m) {
+	if ($new_data =~/^<([^\s>]+)(\s+[^\s>]+)*>([\s\S\n]*)(<\/\1>)/m) {
 	    $struct = &_parse_xml($new_data);
 	}else {
 	    $struct = $new_data;
@@ -375,6 +375,11 @@ sub callCAS {
     
     my @xml = &get_https2($host, $port, $path,{'cafile' =>  $self->{'CAFile'},  'capath' => $self->{'CAPath'}});
 
+    unless (defined $xmlRef) {
+	warn $errors;
+	return undef;
+    }
+
     ## Skip HTTP header fields
     my $line = shift @xml;
     while ($line !~ /^\s*$/){
@@ -467,7 +472,7 @@ sub get_https2{
 	    return undef;
 	}
 	
-	my $request = "GET $path HTTP/1.0\n\n";
+	my $request = "GET $path HTTP/1.0\nHost: $host\n\n";
 	print $ssl_socket "$request\n\n";
 
 	my @result;
