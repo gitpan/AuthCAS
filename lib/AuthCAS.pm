@@ -4,7 +4,7 @@ package AuthCAS;
 use strict;
 use vars qw( $VERSION);
 
-$VERSION = '1.3';
+$VERSION = '1.3.1';
 
 =head1 NAME
 
@@ -12,7 +12,7 @@ AuthCAS - Client library for CAS 2.0 authentication server
 
 =head1 VERSION
 
-Version 1.3
+Version 1.3.1
 
 =head1 DESCRIPTION
 
@@ -375,7 +375,7 @@ sub callCAS {
     
     my @xml = &get_https2($host, $port, $path,{'cafile' =>  $self->{'CAFile'},  'capath' => $self->{'CAPath'}});
 
-    unless (defined $xmlRef) {
+    unless (@xml) {
 	warn $errors;
 	return undef;
     }
