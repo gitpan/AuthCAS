@@ -4,7 +4,7 @@ package AuthCAS;
 use strict;
 use vars qw( $VERSION);
 
-$VERSION = '1.3.1';
+$VERSION = '1.3.3';
 
 =head1 NAME
 
@@ -12,7 +12,7 @@ AuthCAS - Client library for CAS 2.0 authentication server
 
 =head1 VERSION
 
-Version 1.3.1
+Version 1.3.3
 
 =head1 DESCRIPTION
 
@@ -440,15 +440,17 @@ sub get_https2{
 	    return undef;
 	}
 	
-	unless (require IO::Socket::SSL) {
+	unless (eval "require IO::Socket::SSL") {
 	    $errors = sprintf "Unable to use SSL library, IO::Socket::SSL required, install IO-Socket-SSL (CPAN) first\n";
 	    return undef;
 	}
-	
-	unless (require LWP::UserAgent) {
+	require IO::Socket::SSL;
+
+	unless (eval "require LWP::UserAgent") {
 	    $errors = sprintf "Unable to use LWP library, LWP::UserAgent required, install LWP (CPAN) first\n";
 	    return undef;
 	}
+	require  LWP::UserAgent;
 
 	my $ssl_socket;
 
