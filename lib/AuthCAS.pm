@@ -4,7 +4,7 @@ package AuthCAS;
 use strict;
 use vars qw( $VERSION);
 
-$VERSION = '1.4';
+$VERSION = '1.4.1';
 
 =head1 NAME
 
@@ -12,7 +12,7 @@ AuthCAS - Client library for CAS 2.0 authentication server
 
 =head1 VERSION
 
-Version 1.4
+Version 1.4.1
 
 =head1 DESCRIPTION
 
@@ -474,8 +474,8 @@ sub get_https2{
 	    return undef;
 	}
 	
-	my $request = "GET $path HTTP/1.0\nHost: $host\n\n";
-	print $ssl_socket "$request\n\n";
+	my $request = "GET $path HTTP/1.0\r\nHost: $host\r\n\r\n";
+	print $ssl_socket "$request";
 
 	my @result;
 	while (my $line = $ssl_socket->getline) {
